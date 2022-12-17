@@ -5,6 +5,11 @@
 #include <algorithm>
 #include <gnuplot-iostream.h>
 
+/**
+ * @brief
+ * This class defines the beam.
+ * @param length The length of the beam
+*/
 class Beam {
     public:
         double length;
@@ -13,29 +18,47 @@ class Beam {
         length = l;
     }
 };
+
+/**
+ * @brief
+ * This class defines point loads.
+ * @param value The value of the point load, expressed in N, kN, kg,...
+ * @param distance The distance from the starting point of the beam, taken from left.
+*/
 class PointLoad {
     public:
         double value;
         double distance;
-    // Vertical and horizontal loads are appended to their respective context vectors by the frontend, or by the user.
 
     PointLoad(double v, double d) {
         value = v;
         distance = d;
     }
 };
+/**
+ * @brief
+ * This class defines point moments.
+ * @param value The value of the point moments, expressed in Nm, kNm, kgm,...
+ * @param distance The distance from the starting point of the beam, taken from left.
+*/
 class PointMoment {
     public:
         double value;
         double distance;
-        double moment() {
-            return value*distance;
-        }
     PointMoment(double v, double d) {
         value = v;
         distance = d;
     }
 };
+
+/**
+ * @brief
+ * This class defines distributed loads.
+ * @param q1 The value of the load at the left-most point, expressed in N/m, kN/m, kg/m,...
+ * @param q1 The value of the load at the right-most point, expressed in N/m, kN/m, kg/m,...
+ * @param distance The distance from the starting point of the beam, taken from left.
+ * @param length The length of the load;
+*/
 class DistributedLoad {
     public:
         double q1;
@@ -50,6 +73,16 @@ class DistributedLoad {
     }
 };
 
+/**
+ * @brief
+ * This class defines a context of calculations. It must be provided of a Beam instance and other vectors.
+ * @param beam The beam used within the calculations.
+ * @param horizontalLoads The vector of PointLoad instances relative to the beam.
+ * @param verticalLoads The vector of PointLoad instances relative to the beam.
+ * @param distributedLoads The vector of DistributedLoad instances relative to the beam.
+ * @param pointMoments The vector of PointMoment instances relative to the beam.
+ * @param dx This value is used for the approximation of the graph.
+*/
 class Context {
     public:
         Beam beam;
@@ -71,7 +104,10 @@ class Context {
         pointMoments = m;
     }
 
-    // parts of the beam divided by the horizontal loads
+    /**
+    * @brief
+    * This function retrives the nodes of the beam only considering horizontal loads.
+    */
     std::vector<std::pair<double, double>> hPoints() {
         std::vector<double> hp;
         std::vector<std::pair<double,double>> pairs;
@@ -95,7 +131,10 @@ class Context {
         }
         return pairs;
     }
-    // parts of the beam divided by the vertical loads
+    /**
+    * @brief
+    * This function retrives the nodes of the beam only considering vertical and linearly variable loads.
+    */
     std::vector<std::pair<double, double>> vPoints() {
         std::vector<double> vp;
         std::vector<std::pair<double,double>> pairs;
@@ -124,7 +163,10 @@ class Context {
         }
         return pairs;
     }
-    // parts of the beam divided by the vertical loads and the point moments
+    /**
+    * @brief
+    * This function retrives the nodes of the beam only considering vertical loads, linearly variable loads and point moments.
+    */
     std::vector<std::pair<double,double>> mPoints() {
         std::vector<double> mp = {0};
         std::vector<std::pair<double,double>> pairs;
@@ -155,7 +197,10 @@ class Context {
         return pairs;
     }
 
-    // where x is the distance from left
+   /**
+    * @brief
+    * This function calculates the value of the normal force in the point x, where x is the distance from the starting point of the beam, taken from left.
+    */
     double pointH(double x) {
         double hValue = 0;
         for (PointLoad &hl : horizontalLoads) {
@@ -168,6 +213,10 @@ class Context {
         }
         return hValue;
     }
+    /**
+    * @brief
+    * This function calculates the value of the shear force in the point x, where x is the distance from the starting point of the beam, taken from left.
+    */
     double pointV(double x) {
         double vValue = 0;
         for (PointLoad &vl : verticalLoads) {
@@ -214,6 +263,10 @@ class Context {
         }
         return vValue;
     }
+    /**
+    * @brief
+    * This function calculates the value of the bending moment in the point x, where x is the distance from the starting point of the beam, taken from left.
+    */
     double pointM(double x) {
         double mValue = 0;
         for (PointLoad &vl : verticalLoads) {
@@ -264,7 +317,10 @@ class Context {
         }
         return -mValue;
     }
-
+    /**
+    * @brief
+    * This function calculates the horizontal force every dx points. It returns a pair of XY coordinates.
+    */
     std::pair<std::vector<double>,std::vector<double>> getHpair() {
         std::vector<std::pair<double,double>> hPair;
 
@@ -288,6 +344,10 @@ class Context {
         }
         return std::make_pair(xH,yH);
     }
+    /**
+    * @brief
+    * This function calculates the shear force every dx points. It returns a pair of XY coordinates.
+    */
     std::pair<std::vector<double>,std::vector<double>> getTpair() {
         std::vector<std::pair<double,double>> tPair;
 
@@ -311,6 +371,10 @@ class Context {
         }
         return std::make_pair(xT,yT);
     }
+    /**
+    * @brief
+    * This function calculates the bending moment every dx points. It returns a pair of XY coordinates.
+    */
     std::pair<std::vector<double>,std::vector<double>> getMpair() {
         std::vector<std::pair<double,double>> mPair;
 
@@ -335,7 +399,10 @@ class Context {
 
         return std::make_pair(xM,yM);
     }
-
+    /**
+    * @brief
+    * This function runs a gnuplot interactive window with the normal force diagram. Only tested on shell.
+    */
     void Hdiag() {
         Gnuplot hdiag;
         hdiag << "set key noautotitle;\n set offsets 1, 1, 1, 1" << std::endl;
@@ -349,6 +416,10 @@ class Context {
         std::cin.get();
         #endif
     }
+    /**
+    * @brief
+    * This function runs a gnuplot interactive window with the shear force diagram. Only tested on shell.
+    */
     void Vdiag() {
         Gnuplot vdiag;
         vdiag << "set key noautotitle;\n set offsets 1, 1, 1, 1" << std::endl;
@@ -362,6 +433,10 @@ class Context {
         std::cin.get();
         #endif
     }
+    /**
+    * @brief
+    * This function runs a gnuplot interactive window with the bending moment diagram. Only tested on shell.
+    */
     void Mdiag() {
             Gnuplot mdiag;
         mdiag << "set key noautotitle; \nset offsets 1, 1, 1, 1" << std::endl;
