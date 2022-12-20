@@ -4,3 +4,7 @@ A library that draws the cross-sectional effect diagrams. It supports point load
 ## Docs
 
 Documentation avaliable [here](https://emanuelemaz.github.io/easydiag)
+
+## Compiling
+
+You can compile this program with `g++ -o main easydiag.cpp main.cpp -lboost_iostreams -lboost_system -lboost_filesystem && ./main`
