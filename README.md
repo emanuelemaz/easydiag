@@ -1,4 +1,4 @@
-# easydiag
+# [WIP] easydiag
 A library that draws the cross-sectional effect diagrams. It supports point loads, point moments and linearly variable loads.
 
 ## Docs
