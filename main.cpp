@@ -45,10 +45,10 @@ void Context::Mdiag() {
 }
 
 int main() {
-    Beam b(12);
-    std::vector<PointLoad> v {};
+    Beam b(5);
+    std::vector<PointLoad> v {PointLoad(1290,0),PointLoad(1290,5)};
     std::vector<PointLoad> h {};
-    std::vector<DistributedLoad> q {DistributedLoad(-3,-1.2,3,5)};
+    std::vector<DistributedLoad> q {DistributedLoad(-516,-516,0,5)};
     std::vector<PointMoment> m {};
     Context ctx(b,v,h,q,m);
     ctx.Hdiag();
