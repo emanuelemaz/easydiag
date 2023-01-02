@@ -6,7 +6,6 @@
 #include <vector>
 #include <limits>
 #include <algorithm>
-#include <gnuplot-iostream.h>
 
 /**
  * @brief
@@ -134,21 +133,7 @@ class Context {
     * This function calculates the bending moment every dx points. It returns a pair of XY coordinates.
     */
     std::pair<std::vector<double>,std::vector<double>> getMpair();
-    /**
-    * @brief
-    * This function runs a gnuplot interactive window with the normal force diagram. Only tested on shell.
-    */
-    void Hdiag();
-    /**
-    * @brief
-    * This function runs a gnuplot interactive window with the shear force diagram. Only tested on shell.
-    */
-    void Vdiag();
-    /**
-    * @brief
-    * This function runs a gnuplot interactive window with the bending moment diagram. Only tested on shell.
-    */
-    void Mdiag();
+
 };
 
 
