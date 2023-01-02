@@ -1,5 +1,6 @@
 #include "easydiag.h"
 #include <vector>
+#include <gnuplot-iostream.h>
 
 void Context::Hdiag() {
     Gnuplot hdiag;
